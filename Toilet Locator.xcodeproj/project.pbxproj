@@ -1,0 +1,324 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		165D79911E712AC6001DE291 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165D79901E712AC6001DE291 /* AppDelegate.swift */; };
+		165D79931E712AC6001DE291 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165D79921E712AC6001DE291 /* ViewController.swift */; };
+		165D79961E712AC6001DE291 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 165D79941E712AC6001DE291 /* Main.storyboard */; };
+		165D79991E712AC6001DE291 /* Toilet_Locator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 165D79971E712AC6001DE291 /* Toilet_Locator.xcdatamodeld */; };
+		165D799B1E712AC6001DE291 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 165D799A1E712AC6001DE291 /* Assets.xcassets */; };
+		165D799E1E712AC6001DE291 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 165D799C1E712AC6001DE291 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		165D798D1E712AC6001DE291 /* Toilet Locator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Toilet Locator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		165D79901E712AC6001DE291 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		165D79921E712AC6001DE291 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		165D79951E712AC6001DE291 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		165D79981E712AC6001DE291 /* Toilet_Locator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Toilet_Locator.xcdatamodel; sourceTree = "<group>"; };
+		165D799A1E712AC6001DE291 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		165D799D1E712AC6001DE291 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		165D799F1E712AC6001DE291 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		165D798A1E712AC6001DE291 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		165D79841E712AC6001DE291 = {
+			isa = PBXGroup;
+			children = (
+				165D798F1E712AC6001DE291 /* Toilet Locator */,
+				165D798E1E712AC6001DE291 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		165D798E1E712AC6001DE291 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				165D798D1E712AC6001DE291 /* Toilet Locator.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		165D798F1E712AC6001DE291 /* Toilet Locator */ = {
+			isa = PBXGroup;
+			children = (
+				165D79901E712AC6001DE291 /* AppDelegate.swift */,
+				165D79921E712AC6001DE291 /* ViewController.swift */,
+				165D79941E712AC6001DE291 /* Main.storyboard */,
+				165D799A1E712AC6001DE291 /* Assets.xcassets */,
+				165D799C1E712AC6001DE291 /* LaunchScreen.storyboard */,
+				165D799F1E712AC6001DE291 /* Info.plist */,
+				165D79971E712AC6001DE291 /* Toilet_Locator.xcdatamodeld */,
+			);
+			path = "Toilet Locator";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		165D798C1E712AC6001DE291 /* Toilet Locator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 165D79A21E712AC6001DE291 /* Build configuration list for PBXNativeTarget "Toilet Locator" */;
+			buildPhases = (
+				165D79891E712AC6001DE291 /* Sources */,
+				165D798A1E712AC6001DE291 /* Frameworks */,
+				165D798B1E712AC6001DE291 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Toilet Locator";
+			productName = "Toilet Locator";
+			productReference = 165D798D1E712AC6001DE291 /* Toilet Locator.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		165D79851E712AC6001DE291 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "Spencer Gritton";
+				TargetAttributes = {
+					165D798C1E712AC6001DE291 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = Q5RT58DP45;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 165D79881E712AC6001DE291 /* Build configuration list for PBXProject "Toilet Locator" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 165D79841E712AC6001DE291;
+			productRefGroup = 165D798E1E712AC6001DE291 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				165D798C1E712AC6001DE291 /* Toilet Locator */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		165D798B1E712AC6001DE291 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				165D799E1E712AC6001DE291 /* LaunchScreen.storyboard in Resources */,
+				165D799B1E712AC6001DE291 /* Assets.xcassets in Resources */,
+				165D79961E712AC6001DE291 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		165D79891E712AC6001DE291 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				165D79931E712AC6001DE291 /* ViewController.swift in Sources */,
+				165D79991E712AC6001DE291 /* Toilet_Locator.xcdatamodeld in Sources */,
+				165D79911E712AC6001DE291 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		165D79941E712AC6001DE291 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				165D79951E712AC6001DE291 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		165D799C1E712AC6001DE291 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				165D799D1E712AC6001DE291 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		165D79A01E712AC6001DE291 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		165D79A11E712AC6001DE291 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		165D79A31E712AC6001DE291 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = Q5RT58DP45;
+				INFOPLIST_FILE = "Toilet Locator/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spencer-gritton.Toilet-Locator";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		165D79A41E712AC6001DE291 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = Q5RT58DP45;
+				INFOPLIST_FILE = "Toilet Locator/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spencer-gritton.Toilet-Locator";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		165D79881E712AC6001DE291 /* Build configuration list for PBXProject "Toilet Locator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				165D79A01E712AC6001DE291 /* Debug */,
+				165D79A11E712AC6001DE291 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		165D79A21E712AC6001DE291 /* Build configuration list for PBXNativeTarget "Toilet Locator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				165D79A31E712AC6001DE291 /* Debug */,
+				165D79A41E712AC6001DE291 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		165D79971E712AC6001DE291 /* Toilet_Locator.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				165D79981E712AC6001DE291 /* Toilet_Locator.xcdatamodel */,
+			);
+			currentVersion = 165D79981E712AC6001DE291 /* Toilet_Locator.xcdatamodel */;
+			path = Toilet_Locator.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 165D79851E712AC6001DE291 /* Project object */;
+}
