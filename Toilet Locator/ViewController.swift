@@ -7,19 +7,108 @@
 //
 
 import UIKit
+import MapKit
+import CoreLocation
 
-class ViewController: UIViewController {
+var showTheseBusinesses = ["Gas", "Coffee", "Restrooms", "Bathrooms", "Rest Stop"]
+
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate{
+    
+    var manager = CLLocationManager()
+    @IBOutlet weak var map: MKMapView!
+    
+    // This function is called everytime user location is updated
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // This function sets map to users location
+        let location = locations[0]
+        let span: MKCoordinateSpan = MKCoordinateSpanMake(0.01, 0.01)
+        
+        let myLocations: CLLocationCoordinate2D = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
+        
+        let region:MKCoordinateRegion = MKCoordinateRegionMake(myLocations, span)
+        map.setRegion(region, animated: true)
+        self.map.showsUserLocation = true
+        
+        // For each business type the user selects, populateNearByPlaces with that business type
+        for item in showTheseBusinesses {
+            populateNearByPlaces(place: item)
+        }
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    var alreadyPopulatedPlaces: NSMutableArray = []
+    
+    func populateNearByPlaces(place: String) {
+        /* this function populates near by businesses onto the mapView.*/
+        
+        //Setting region to search for businesses
+        var region = MKCoordinateRegion()
+        region.center = CLLocationCoordinate2D(latitude: self.map.userLocation.coordinate.latitude, longitude: self.map.userLocation.coordinate.longitude)
+        
+        //Requesting search for businesses in region
+        let request = MKLocalSearchRequest()
+        //Requesting by business type
+        request.naturalLanguageQuery = place
+        request.region = region
+        
+        //Search for region
+        let search = MKLocalSearch(request: request)
+        search.start { (response, error) in
+            
+            guard let response = response else {
+                return
+            }
+                //If no error then add each item in the list of businesses to map as an annotation with the title of it's name
+            for item in response.mapItems {
+                
+                //Check if annotation already added, if so don't add a new one.
+                if self.alreadyPopulatedPlaces.contains(item.placemark.coordinate) {
+                    
+                    return }
+                
+                else {
+                    
+                    // set the annotation on the map
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = item.placemark.coordinate
+                    annotation.title = item.placemark.name
+                    self.alreadyPopulatedPlaces.add(item.placemark.coordinate)
+                    
+                    DispatchQueue.main.async {
+                        self.map.addAnnotation(annotation)
+                    }
+                }
+                
+                }
+                
+            }
+        
+            }
+            
 }
+
+
+
+
+
 

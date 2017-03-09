@@ -13,6 +13,9 @@
 		165D79991E712AC6001DE291 /* Toilet_Locator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 165D79971E712AC6001DE291 /* Toilet_Locator.xcdatamodeld */; };
 		165D799B1E712AC6001DE291 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 165D799A1E712AC6001DE291 /* Assets.xcassets */; };
 		165D799E1E712AC6001DE291 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 165D799C1E712AC6001DE291 /* LaunchScreen.storyboard */; };
+		165D79A61E712FB3001DE291 /* ToiletLocatorIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 165D79A51E712FB3001DE291 /* ToiletLocatorIcon.png */; };
+		165D79AA1E71355A001DE291 /* ClickMe.png in Resources */ = {isa = PBXBuildFile; fileRef = 165D79A91E71355A001DE291 /* ClickMe.png */; };
+		165D79AD1E7136F6001DE291 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 165D79AC1E7136F6001DE291 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		165D799A1E712AC6001DE291 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		165D799D1E712AC6001DE291 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		165D799F1E712AC6001DE291 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		165D79A51E712FB3001DE291 /* ToiletLocatorIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ToiletLocatorIcon.png; sourceTree = "<group>"; };
+		165D79A91E71355A001DE291 /* ClickMe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ClickMe.png; sourceTree = "<group>"; };
+		165D79AC1E7136F6001DE291 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				165D79AD1E7136F6001DE291 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +49,9 @@
 			children = (
 				165D798F1E712AC6001DE291 /* Toilet Locator */,
 				165D798E1E712AC6001DE291 /* Products */,
+				165D79A51E712FB3001DE291 /* ToiletLocatorIcon.png */,
+				165D79A91E71355A001DE291 /* ClickMe.png */,
+				165D79AB1E7136F6001DE291 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +75,14 @@
 				165D79971E712AC6001DE291 /* Toilet_Locator.xcdatamodeld */,
 			);
 			path = "Toilet Locator";
+			sourceTree = "<group>";
+		};
+		165D79AB1E7136F6001DE291 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				165D79AC1E7136F6001DE291 /* CoreLocation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,7 +146,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				165D799E1E712AC6001DE291 /* LaunchScreen.storyboard in Resources */,
+				165D79AA1E71355A001DE291 /* ClickMe.png in Resources */,
 				165D799B1E712AC6001DE291 /* Assets.xcassets in Resources */,
+				165D79A61E712FB3001DE291 /* ToiletLocatorIcon.png in Resources */,
 				165D79961E712AC6001DE291 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
