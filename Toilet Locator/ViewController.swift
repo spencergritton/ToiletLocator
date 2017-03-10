@@ -10,12 +10,12 @@ import UIKit
 import MapKit
 import CoreLocation
 
-var showTheseBusinesses = ["Gas", "Coffee", "Restrooms", "Bathrooms", "Rest Stop"]
-
 class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate{
     
     var manager = CLLocationManager()
     @IBOutlet weak var map: MKMapView!
+    var showTheseBusinesses = ["Gas", "Coffee", "Restrooms", "Bathrooms", "Rest Stop"]
+    
     
     // This function is called everytime user location is updated
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -33,14 +33,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         for item in showTheseBusinesses {
             populateNearByPlaces(place: item)
         }
+        
     }
-    
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -50,13 +44,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         manager.startUpdatingLocation()
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-    var alreadyPopulatedPlaces: NSMutableArray = []
+    var alreadyPopulatedPlaces: Array = [MKMapItem]()
     
     func populateNearByPlaces(place: String) {
         /* this function populates near by businesses onto the mapView.*/
@@ -82,7 +71,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             for item in response.mapItems {
                 
                 //Check if annotation already added, if so don't add a new one.
-                if self.alreadyPopulatedPlaces.contains(item.placemark.coordinate) {
+                if self.alreadyPopulatedPlaces.contains(item) {
                     
                     return }
                 
@@ -92,7 +81,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = item.placemark.coordinate
                     annotation.title = item.placemark.name
-                    self.alreadyPopulatedPlaces.add(item.placemark.coordinate)
+                    self.alreadyPopulatedPlaces.append(item)
                     
                     DispatchQueue.main.async {
                         self.map.addAnnotation(annotation)
@@ -100,10 +89,29 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 }
                 
                 }
+            // Delete annotations that are far away.
+            for item in self.alreadyPopulatedPlaces {
+                if response.mapItems.contains(item) {
+                    return
+                } else {
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = item.placemark.coordinate
+                    annotation.title = item.placemark.name
+                    self.alreadyPopulatedPlaces = self.alreadyPopulatedPlaces.filter() { $0 !== item }
+                    self.map.removeAnnotation(annotation)
+                }
+            }
                 
             }
         
             }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+
             
 }
 
