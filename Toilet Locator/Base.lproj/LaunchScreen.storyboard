@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,32 +21,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Toilet Locator" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRk-bk-Fgm">
-                                <rect key="frame" x="44" y="305" width="287" height="57"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="57" id="9Lh-Iv-BTm"/>
-                                    <constraint firstAttribute="width" constant="287" id="FC2-vm-2Bv"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="BodoniSvtyTwoSCITCTT-Book" family="Bodoni 72 Smallcaps" pointSize="47"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ToiletLocatorIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="45M-fC-i1P">
-                                <rect key="frame" x="23" y="8" width="328" height="300"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ToiletLocatorIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="45M-fC-i1P">
+                                <rect key="frame" x="23.5" y="8" width="328" height="300"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="Bmf-8F-slQ"/>
                                     <constraint firstAttribute="width" constant="328" id="bW8-aP-imK"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public Potties" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRk-bk-Fgm">
+                                <rect key="frame" x="56.5" y="305" width="262.5" height="57"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="57" id="RwN-Zp-WSK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="BodoniSvtyTwoSCITCTT-Book" family="Bodoni 72 Smallcaps" pointSize="47"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="1" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="tintColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="HRk-bk-Fgm" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="28" id="0Hx-UY-VDg"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="45M-fC-i1P" secondAttribute="bottom" constant="359" id="0bU-qL-4HN"/>
                             <constraint firstItem="45M-fC-i1P" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="5IR-Bq-ZxQ"/>
-                            <constraint firstItem="HRk-bk-Fgm" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="ntl-IC-lNR"/>
-                            <constraint firstItem="HRk-bk-Fgm" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="osF-Uz-pQt"/>
+                            <constraint firstItem="HRk-bk-Fgm" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="aT7-oi-RaL"/>
+                            <constraint firstItem="HRk-bk-Fgm" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="285" id="c6h-ud-0aE"/>
                         </constraints>
                     </view>
                 </viewController>
