@@ -17,6 +17,7 @@
 		165D79AA1E71355A001DE291 /* ClickMe.png in Resources */ = {isa = PBXBuildFile; fileRef = 165D79A91E71355A001DE291 /* ClickMe.png */; };
 		165D79AD1E7136F6001DE291 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 165D79AC1E7136F6001DE291 /* CoreLocation.framework */; };
 		1669D9251E748ACF00B85240 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1669D9241E748ACF00B85240 /* OptionsViewController.swift */; };
+		16A0562A1E8AE0FE00DF3DA1 /* LocationObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A056291E8AE0FE00DF3DA1 /* LocationObjects.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		165D79A91E71355A001DE291 /* ClickMe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ClickMe.png; sourceTree = "<group>"; };
 		165D79AC1E7136F6001DE291 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1669D9241E748ACF00B85240 /* OptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
+		16A056291E8AE0FE00DF3DA1 /* LocationObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationObjects.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 			children = (
 				165D79901E712AC6001DE291 /* AppDelegate.swift */,
 				165D79921E712AC6001DE291 /* ViewController.swift */,
+				16A056291E8AE0FE00DF3DA1 /* LocationObjects.swift */,
 				1669D9241E748ACF00B85240 /* OptionsViewController.swift */,
 				165D79941E712AC6001DE291 /* Main.storyboard */,
 				165D799A1E712AC6001DE291 /* Assets.xcassets */,
@@ -163,6 +166,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16A0562A1E8AE0FE00DF3DA1 /* LocationObjects.swift in Sources */,
 				165D79931E712AC6001DE291 /* ViewController.swift in Sources */,
 				1669D9251E748ACF00B85240 /* OptionsViewController.swift in Sources */,
 				165D79991E712AC6001DE291 /* Toilet_Locator.xcdatamodeld in Sources */,
