@@ -28,8 +28,8 @@
                                     <constraint firstAttribute="width" constant="328" id="bW8-aP-imK"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public Potties" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRk-bk-Fgm">
-                                <rect key="frame" x="56.5" y="305" width="262.5" height="57"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Potty Finder" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRk-bk-Fgm">
+                                <rect key="frame" x="67.5" y="305" width="240.5" height="57"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="57" id="RwN-Zp-WSK"/>
                                 </constraints>

@@ -14,14 +14,15 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     
     // Initial calls for useful variables
     // Map Annotation Marker Image
-    let pizzpin = #imageLiteral(resourceName: "Toiletmap")
+    let annotationPin = #imageLiteral(resourceName: "Toiletmap")
     var manager = CLLocationManager()
     // Businesses for MKLocalSearch Query
-    var showTheseBusinesses = ["Gas", "Coffee", "Bathroom", "Fast Food"]
+    var showTheseBusinesses = ["Gas Stations", "Coffee", "Bathroom", "Fast Food"]
     // Whether or not to focus on user Location
     var locationLock = true
     
     @IBOutlet weak var mapView: MKMapView!
+    
     
     /* VIEW DID APPEAR
  - called everytime the mapView appear, if you go to settings
@@ -36,6 +37,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
     }
     
+    
     /* LOCATION LOCK BUTTON
  - Locks mapView on and off of user location so you can swipe around */
     @IBAction func test(_ sender: Any) {
@@ -46,6 +48,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         }
     }
     
+    
     /* MAP VIEW
  - Basically controls how certain annotations are shown, their callouts, images etc.. */
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -54,15 +57,16 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 return view
             }else{
                 let view = MKAnnotationView(annotation: annotation, reuseIdentifier: annotation.identifier)
-                view.image = pizzpin
+                view.image = annotationPin
                 view.isEnabled = true
                 view.canShowCallout = true
-                view.leftCalloutAccessoryView = UIImageView(image: pizzpin)
+                view.leftCalloutAccessoryView = UIImageView(image: annotationPin)
                 return view
             }
         }
         return nil
     }
+    
     
     /* DIDUPDATELOCATIONS
  - Extremely important, called anytime the users location is updated assuming locationLock is on */
@@ -86,9 +90,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query
         // This is done through the populate function.. could use a better name.
         for item in showTheseBusinesses {
-            populate(location: mapView.centerCoordinate, locationQuery: item)
+            populate(locationQuery: item)
         }
     }
+    
     
     /* REGIONWILLCHANGE
  - This is if the user is swiping on the screen or rotating the map
@@ -99,20 +104,20 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         if locationLock == true {
             return
         }
-        print("Yes")
         // if location lock is off then user is scrolling and wants to see businesses away 
         // from their personal location
         
         // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query
         // This is done through the populate function.. could use a better name.
         for item in showTheseBusinesses {
-            populate(location: mapView.centerCoordinate, locationQuery: item)
+            populate(locationQuery: item)
         }
     }
     
     // Useful arrays for handling placing annotations on the map and avoiding double placing annotations
     var prePopulated = [LocationObjects]()
     var toPopulate = [LocationObjects]()
+    
     
     /* DELETELOCATIONS
  - New function that is very useful on reducing clutter. 
@@ -142,10 +147,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
 
     }
     
+    
     /* POPULATE
  - The brain-child of the entire operation. This creates MKLocalSearch Queries for one item at a time.
  it then checks if the map has the local businesses on the map and if not adds them. */
-    func populate(location: CLLocationCoordinate2D, locationQuery: String) {
+    func populate(locationQuery: String) {
         // Set region to search for
         var region = MKCoordinateRegion()
         region.center = CLLocationCoordinate2D(latitude: self.mapView.centerCoordinate.latitude, longitude: self.mapView.centerCoordinate.longitude)
