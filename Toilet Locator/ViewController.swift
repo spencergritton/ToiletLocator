@@ -114,6 +114,23 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         }
     }
     
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        // Check if location lock is off, if not don't do anything
+        if locationLock == true {
+            return
+        }
+        // if location lock is off then user is scrolling and wants to see businesses away
+        // from their personal location
+        
+        // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query
+        // This is done through the populate function.. could use a better name.
+        for item in showTheseBusinesses {
+            populate(locationQuery: item)
+        }
+    }
+    // ---------------------------------------- RegionDidChange and RegionWillChange do the same thing
+    
+    
     // Useful arrays for handling placing annotations on the map and avoiding double placing annotations
     var prePopulated = [LocationObjects]()
     var toPopulate = [LocationObjects]()
@@ -145,6 +162,24 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             }
         }
 
+    }
+    
+    /* ADDANNOTATIONS
+ - Function that adds annotations from the toPopulate que to the map, if not already on map
+ - Then removes from the que and adds to the prePopulated AKA already on map list. */
+    func addAnnotations() {
+        for annotation in toPopulate {
+            // If it's already on the map (prePopulated) move on
+            if prePopulated.contains(annotation) {
+                toPopulate = toPopulate.filter() { $0 !== annotation }
+                continue
+            } else {
+                // The annotation is not already on the map and needs to be added
+                prePopulated.append(annotation)
+                mapView.addAnnotation(annotation)
+                toPopulate = toPopulate.filter() { $0 !== annotation }
+            }
+        }
     }
     
     
@@ -189,21 +224,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         deleteLocations()
         
         // Add annotations to map that are nearby and not already on the map
-        for annotation in toPopulate {
-            // If it's already on the map (prePopulated) move on
-            if prePopulated.contains(annotation) {
-                toPopulate = toPopulate.filter() { $0 !== annotation }
-                continue
-            } else {
-                // The annotation is not already on the map and needs to be added
-                prePopulated.append(annotation)
-                mapView.addAnnotation(annotation)
-                toPopulate = toPopulate.filter() { $0 !== annotation }
-                
-            }
-            
-        }
-        
+        addAnnotations()
     }
 }
 
