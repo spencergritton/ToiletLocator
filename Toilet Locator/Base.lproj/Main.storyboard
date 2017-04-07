@@ -12,7 +12,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Toilet_Locator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="BYZ-38-t0r" customClass="ViewController" customModule="Toilet_Locator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -25,6 +25,7 @@
                                 <rect key="frame" x="0.0" y="50" width="375" height="429"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.0" green="1" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="iJ8-WV-xwZ"/>
                                 </connections>
@@ -54,7 +55,7 @@
                                         <barButtonItem key="rightBarButtonItem" title="..." style="done" id="7R4-ji-Nz2">
                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <connections>
-                                                <segue destination="iKK-VS-2AK" kind="show" id="Zjk-Gx-tq3"/>
+                                                <segue destination="iKK-VS-2AK" kind="show" action="showDetailViewController:sender:" id="Zjk-Gx-tq3"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -103,7 +104,7 @@
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="eBu-FA-css">
                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <connections>
-                                                <segue destination="BYZ-38-t0r" kind="show" id="Wdv-sa-tft"/>
+                                                <segue destination="BYZ-38-t0r" kind="show" action="showDetailViewController:sender:" id="Wdv-sa-tft"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>

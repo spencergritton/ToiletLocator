@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate{
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate{
     
     // Initial calls for useful variables
     // Map Annotation Marker Image
@@ -20,7 +20,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var showTheseBusinesses = ["Gas Stations", "Coffee", "Bathroom", "Fast Food"]
     // Whether or not to focus on user Location
     var locationLock = true
-    
+    // Map Declaration
     @IBOutlet weak var mapView: MKMapView!
     
     
@@ -35,8 +35,21 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         manager.startUpdatingLocation()
         mapView.delegate = self
         
+        // Swipe Gesture Recognizer
+        let swipeRecogonizer = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.generalGestureRecognizer(gesture:)))
+        swipeRecogonizer.delegate = self
+        // Pan Gesture Recognizer
+        let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ViewController.generalGestureRecognizer(gesture:)))
+        panRecognizer.delegate = self
+        // Rotate Gesture Recognizer
+        let rotationRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(ViewController.generalGestureRecognizer(gesture:)))
+        rotationRecognizer.delegate = self
+        
+        // Add all three gesture recognizers to the mapView
+        mapView.addGestureRecognizer(swipeRecogonizer)
+        mapView.addGestureRecognizer(panRecognizer)
+        mapView.addGestureRecognizer(rotationRecognizer)
     }
-    
     
     /* LOCATION LOCK BUTTON
  - Locks mapView on and off of user location so you can swipe around */
@@ -45,6 +58,32 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             locationLock = false
         } else {
             locationLock = true
+        }
+    }
+    
+    /* GESTURE RECOGNIZER
+ - This function allows the mapView to recognize UIGestures outside of it's normal allotted tap and double tap
+ - These normally only work on the view controller so this function is key to allowing them to work on the mapView. */
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Check if the gesture is one of the three we are isoltating to use
+        if (gestureRecognizer is UIPanGestureRecognizer || gestureRecognizer is UIRotationGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer) {
+            // if so allow the gesture recognizer's specified above to be used
+            return true
+        } else {
+            return false
+        }
+    }
+
+    
+    
+    /* GENERAL GESTURE RECOGNIZER
+     This is the general gesture recognizer function.
+ - If the user is location locked and decides to swipe, rotate, or pan they will be unlocked.
+ - This is so that they can move around to look at other toilets and areas easily w/o the location lock button */
+    
+    func generalGestureRecognizer(gesture: UIGestureRecognizer) {
+        if gesture.state == .ended && locationLock == true {
+            locationLock = false
         }
     }
     
@@ -75,7 +114,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         if locationLock == false{
             return
         }
-        
         // This function sets map to users location every time it updates
         let location = locations[0]
         let span: MKCoordinateSpan = MKCoordinateSpanMake(0.01, 0.01)
