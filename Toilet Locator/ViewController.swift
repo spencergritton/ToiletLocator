@@ -24,7 +24,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
     
-    
     /* VIEW DID APPEAR
  - called everytime the mapView appear, if you go to settings
  then back it will appear again */
@@ -307,35 +306,64 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         addAnnotations()
     }
     
-    
+    /* SORTPREPOPULATED
+ - Sorts prePopulated list in order of ascending distance */
     func sortPrePopulated() {
         prePopulated = prePopulated.sorted(by: { $0.distance < $1.distance } )
     }
     
-    // START TABLE VIEW FUNCTIONS
+    /* OPENANNOTATION
+ - Thanks to stackoverflow.com/questions/2193843/how-to-open-call-out-mkannotatioview-programmatically-iphone-mapkit
+ - Opens callout view of annotation passed into it */
+    func openAnnotation(id: MKAnnotation) {
+        _ = [mapView .selectAnnotation(id, animated: true)]
+    }
     
-    // IN PROGRESS
+    
+    
+    // START TABLE VIEW FUNCTIONS ------------------------------------------------------------------
+    
+    /* NUMBEROFROWSINSECTION
+ - returns the number of rows in prePopulated, making the table as long as the array */
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return prePopulated.count
     }
     
-    
+    /* CELLFORROWAT
+ - Customizes what each cell contains: text, images, etc.. */
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        // Tells the table to use the cell "Cell"
         let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
         
         if prePopulated[indexPath.row].title != nil {
             
             cell.textLabel?.text = "\(prePopulated[indexPath.row].title!) \(prePopulated[indexPath.row].distance)"
-            print(prePopulated[indexPath.row].addressFinished + " " + prePopulated[indexPath.row].title!)
             
         } else {
+            // if there is no title make it blank
             cell.textLabel?.text = ""
+            
         }
-        
         return cell
+    }
+    
+    /* DIDSELECTROWAT
+ - What happens when the user clicks one of the cells in the table */
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // Turn location lock off, zoom map to the coordinates of the place selected.
+        locationLock = false
+        LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
+        
+       let region = MKCoordinateRegionMakeWithDistance(prePopulated[indexPath.row].coordinate, 500, 500)
+        mapView.setRegion(region, animated: true)
+        
+        // Open the annotation callout view on the map
+        openAnnotation(id: prePopulated[indexPath.row])
+        
     }
 }
 
