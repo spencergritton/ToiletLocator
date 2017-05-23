@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate{
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource{
     
     // Initial calls for useful variables
     // Map Annotation Marker Image
@@ -22,6 +22,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var locationLock = true
     // Map Declaration
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var tableView: UITableView!
     
     
     /* VIEW DID APPEAR
@@ -49,17 +50,25 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         mapView.addGestureRecognizer(swipeRecogonizer)
         mapView.addGestureRecognizer(panRecognizer)
         mapView.addGestureRecognizer(rotationRecognizer)
+        
+        // Pre-populate the map after the use location is zoomed in, this happens because the map isn't dragged and
+        // the location doesn't move so there will be no pins on the map
+        // This only adds "Gas Station" Annotations
+        perform(#selector(ViewController.populate(locationQuery:)), with: "Gas Stations", afterDelay: 2)
     }
     
     /* LOCATION LOCK BUTTON
- - Locks mapView on and off of user location so you can swipe around */
-    @IBAction func test(_ sender: Any) {
+     - Locks mapView on and off of user location so you can swipe around */
+    @IBAction func LocationLockButtonPressed(_ sender: Any) {
         if locationLock == true {
             locationLock = false
+            LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
         } else {
             locationLock = true
+            LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObject"), for: .normal)
         }
     }
+    @IBOutlet weak var LocationLockButtonOutlet: UIButton!
     
     /* GESTURE RECOGNIZER
  - This function allows the mapView to recognize UIGestures outside of it's normal allotted tap and double tap
@@ -84,6 +93,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     func generalGestureRecognizer(gesture: UIGestureRecognizer) {
         if gesture.state == .ended && locationLock == true {
             locationLock = false
+            LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
         }
     }
     
@@ -130,6 +140,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         for item in showTheseBusinesses {
             populate(locationQuery: item)
         }
+        tableView.reloadData()
     }
     
     
@@ -150,8 +161,9 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         for item in showTheseBusinesses {
             populate(locationQuery: item)
         }
+        tableView.reloadData()
     }
-    
+    /* REGIONDIDCHANGE */
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         // Check if location lock is off, if not don't do anything
         if locationLock == true {
@@ -165,6 +177,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         for item in showTheseBusinesses {
             populate(locationQuery: item)
         }
+        tableView.reloadData()
     }
     // ---------------------------------------- RegionDidChange and RegionWillChange do the same thing
     
@@ -174,11 +187,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var toPopulate = [LocationObjects]()
     
     
-    /* DELETELOCATIONS
+    /* DELETELOCATIONSTENMILESAWAY
  - New function that is very useful on reducing clutter. 
  - Makes sure that if an annotation is not within ten miles of the users view that it is deleted to keep the app running freshly and without problems. This is done by calculating distance between the center of the map and all annotations on
      the map. */
-    func deleteLocations() {
+    func deleteLocationsTenMilesAway() {
         //If an annotation is in the map but is not nearby.. Delete it
         for annotation in mapView.annotations {
             if (annotation is MKUserLocation) {
@@ -199,18 +212,28 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 }
             }
         }
-
     }
     
     /* ADDANNOTATIONS
  - Function that adds annotations from the toPopulate que to the map, if not already on map
  - Then removes from the que and adds to the prePopulated AKA already on map list. */
     func addAnnotations() {
-        for annotation in toPopulate {
+        mainAddLoop: for annotation in toPopulate {
             // If it's already on the map (prePopulated) move on
+            // check if similar placed annotation is already on map
+            for currentAnnotation in prePopulated {
+                if currentAnnotation.coordinate.latitude == annotation.coordinate.latitude {
+                    
+                    toPopulate = toPopulate.filter() { $0 !== annotation }
+                    continue mainAddLoop
+                    
+                }
+            }
+            
             if prePopulated.contains(annotation) {
                 toPopulate = toPopulate.filter() { $0 !== annotation }
-                continue
+                continue mainAddLoop
+                
             } else {
                 // The annotation is not already on the map and needs to be added
                 prePopulated.append(annotation)
@@ -245,12 +268,30 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             }
             
             // For each allowed item create a custom LocationObjects object using the data
-            for item in (response?.mapItems)! {
-                let annotation = LocationObjects(name: item.name!, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude)
+            mainLoop: for item in (response?.mapItems)! {
                 
+                // Finding phone number if available
+                var phone:String
+                if item.phoneNumber != nil {
+                    phone = item.phoneNumber!
+                } else {
+                    phone = " "
+                }
+                
+                // Finding address if available
+                var address:String
+                if (item.placemark.subThoroughfare != nil) {
+                    address = item.placemark.subThoroughfare! + " " + item.placemark.thoroughfare! + " " + item.placemark.locality! + ", " + item.placemark.administrativeArea! + " " + item.placemark.postalCode!
+                } else {
+                    address = " "
+                }
+                
+                let annotation = LocationObjects(name: item.name!, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude, userCLLocation: CLLocation(latitude: self.mapView.userLocation.coordinate.latitude, longitude: self.mapView.userLocation.coordinate.longitude), phone: phone, address: address)
+
                 // if the annotation is already on the map skip it
                 if self.prePopulated.contains(annotation) {
-                    continue
+                    continue mainLoop
+                    
                 } else {
                     // else not on map already and append it to the toPopulate to deal with later on
                     self.toPopulate.append(annotation)
@@ -259,10 +300,42 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         }
         
         // Delete old and annotations more than ten miles away to conserve space
-        deleteLocations()
+        deleteLocationsTenMilesAway()
         
         // Add annotations to map that are nearby and not already on the map
+        sortPrePopulated()
         addAnnotations()
+    }
+    
+    
+    func sortPrePopulated() {
+        prePopulated = prePopulated.sorted(by: { $0.distance < $1.distance } )
+    }
+    
+    // START TABLE VIEW FUNCTIONS
+    
+    // IN PROGRESS
+    
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return prePopulated.count
+    }
+    
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        
+        if prePopulated[indexPath.row].title != nil {
+            
+            cell.textLabel?.text = "\(prePopulated[indexPath.row].title!) \(prePopulated[indexPath.row].distance)"
+            print(prePopulated[indexPath.row].addressFinished + " " + prePopulated[indexPath.row].title!)
+            
+        } else {
+            cell.textLabel?.text = ""
+        }
+        
+        return cell
     }
 }
 
