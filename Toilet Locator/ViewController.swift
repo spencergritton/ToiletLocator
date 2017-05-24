@@ -20,12 +20,25 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var showTheseBusinesses = ["Gas Stations", "Coffee", "Bathroom", "Fast Food"]
     // Whether or not to focus on user Location
     var locationLock = true
+    // Whether activity indicator is on or not
+    var activityIndicator = false
+    // Timer and counter since last timer
+    var timer = Timer()
+    var currentTime = 0
+    var sinceLastTimer = 0
+    
+    
+    // OUTLETS --
     // Map Declaration
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
+    // Activity Indicator
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    // Location Lock Outlet
+    @IBOutlet weak var LocationLockButtonOutlet: UIButton!
     
     /* VIEW DID APPEAR
- - called everytime the mapView appear, if you go to settings
+ - called everytime the mapView appears, if you go to settings
  then back it will appear again */
     override func viewDidAppear(_ animated: Bool) {
         
@@ -53,21 +66,30 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         // Pre-populate the map after the use location is zoomed in, this happens because the map isn't dragged and
         // the location doesn't move so there will be no pins on the map
         // This only adds "Gas Station" Annotations
-        perform(#selector(ViewController.populate(locationQuery:)), with: "Gas Stations", afterDelay: 2)
+        perform(#selector(ViewController.populate(locationQuery:)), with: "Gas Stations", afterDelay: 5)
+        
+        activityIndicator = true
+        activityIndicatorView.startAnimating()
     }
     
     /* LOCATION LOCK BUTTON
      - Locks mapView on and off of user location so you can swipe around */
     @IBAction func LocationLockButtonPressed(_ sender: Any) {
         if locationLock == true {
+            
+            // if location lock is on and button is pressed turn it to true
+            // Also invalidate timer since it is only useful when LL is on
             locationLock = false
+            timer.invalidate()
             LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
+            
         } else {
+            
+            // The opposite case, if it's off turn it on
             locationLock = true
             LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObject"), for: .normal)
         }
     }
-    @IBOutlet weak var LocationLockButtonOutlet: UIButton!
     
     /* GESTURE RECOGNIZER
  - This function allows the mapView to recognize UIGestures outside of it's normal allotted tap and double tap
@@ -91,7 +113,11 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     
     func generalGestureRecognizer(gesture: UIGestureRecognizer) {
         if gesture.state == .ended && locationLock == true {
+            
+            // if someone swipes and location lock is on, turn it off, invalidate timer
+            // and change button image
             locationLock = false
+            timer.invalidate()
             LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
         }
     }
@@ -123,6 +149,15 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         if locationLock == false{
             return
         }
+        
+        // If the timer is not running then start it
+        if timer.isValid == false {
+            // Reset current and sinceLast counters
+            currentTime = 0
+            sinceLastTimer = 0
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.timeCounter), userInfo: nil, repeats: true)
+        }
+        
         // This function sets map to users location every time it updates
         let location = locations[0]
         let span: MKCoordinateSpan = MKCoordinateSpanMake(0.01, 0.01)
@@ -134,12 +169,19 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         // Show the user location on the map
         self.mapView.showsUserLocation = true
         
-        // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query
-        // This is done through the populate function.. could use a better name.
-        for item in showTheseBusinesses {
-            populate(locationQuery: item)
+        // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query (populate function)
+        // This is only called every five seconds with the assistance of a Timer
+        
+        if (currentTime - sinceLastTimer) > 5 {
+            // if they are greater than five then set them equal to keep counting five seconds
+            sinceLastTimer = currentTime
+            
+            for item in showTheseBusinesses {
+                populate(locationQuery: item)
+            }
+            tableView.reloadData()
+            
         }
-        tableView.reloadData()
     }
     
     
@@ -186,6 +228,80 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var toPopulate = [LocationObjects]()
     
     
+    /* POPULATE
+     - The brain-child of the entire operation. This creates MKLocalSearch Queries for one item at a time.
+     it then checks if the map has the local businesses on the map and if not adds them. */
+    func populate(locationQuery: String) {
+        
+        // Check if list is empty in which case activity indicator should be on
+        if (prePopulated.isEmpty == true) && (activityIndicator == false) {
+            
+            activityIndicator = true
+            activityIndicatorView.startAnimating()
+            
+        }
+        
+        // Set region to search for
+        var region = MKCoordinateRegion()
+        region.center = CLLocationCoordinate2D(latitude: self.mapView.centerCoordinate.latitude, longitude: self.mapView.centerCoordinate.longitude)
+        
+        //Requesting search for businesses in region
+        let request = MKLocalSearchRequest()
+        //Requesting by business type
+        request.naturalLanguageQuery = locationQuery
+        request.region = region
+        
+        
+        //Search for region
+        let search = MKLocalSearch(request: request)
+        search.start { (response, error) in
+            
+            // Only allow responses with business information
+            guard response != nil else {
+                return
+            }
+            
+            // For each allowed item create a custom LocationObjects object using the data
+            mainLoop: for item in (response?.mapItems)! {
+                
+                // Finding phone number if available
+                var phone:String
+                if item.phoneNumber != nil {
+                    phone = item.phoneNumber!
+                } else {
+                    phone = " "
+                }
+                
+                // Finding address if available
+                var address:String
+                if (item.placemark.subThoroughfare != nil) {
+                    address = item.placemark.subThoroughfare! + " " + item.placemark.thoroughfare! + " " + item.placemark.locality! + ", " + item.placemark.administrativeArea! + " " + item.placemark.postalCode!
+                } else {
+                    address = " "
+                }
+                
+                let annotation = LocationObjects(name: item.name!, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude, userCLLocation: CLLocation(latitude: self.mapView.userLocation.coordinate.latitude, longitude: self.mapView.userLocation.coordinate.longitude), phone: phone, address: address)
+                
+                // if the annotation is already on the map skip it
+                if self.prePopulated.contains(annotation) {
+                    continue mainLoop
+                    
+                } else {
+                    // else not on map already and append it to the toPopulate to deal with later on
+                    self.toPopulate.append(annotation)
+                }
+            }
+        }
+        
+        // Delete old and annotations more than ten miles away to conserve space
+        deleteLocationsTenMilesAway()
+        
+        // Add annotations to map that are nearby and not already on the map
+        sortPrePopulated()
+        addAnnotations()
+    }
+    
+    
     /* DELETELOCATIONSTENMILESAWAY
  - New function that is very useful on reducing clutter. 
  - Makes sure that if an annotation is not within ten miles of the users view that it is deleted to keep the app running freshly and without problems. This is done by calculating distance between the center of the map and all annotations on
@@ -202,7 +318,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 let annotationPoint = CLLocation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
                 let distance = userView.distance(from: annotationPoint)
                 
-                // Check how far away annotation is from user view, if over 10 miles then delete annotation
+                // Check how far away annotation is from user view, if over 10 miles (in meters) then delete annotation
                 if distance > 16093 {
                     mapView.removeAnnotation(annotation)
                     prePopulated = prePopulated.filter() { $0 !== annotation }
@@ -210,6 +326,21 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                     continue
                 }
             }
+        }
+        
+        // Extra check to make sure no annotations in the mapView or table have Distance > 10 Mi
+        for annotation in prePopulated {
+            if annotation.distance > 10 {
+                mapView.removeAnnotation(annotation)
+                prePopulated = prePopulated.filter() { $0 !== annotation }
+            }
+        }
+        
+        // turn activity indicator off if it is on when we know there are things in the map
+        if (activityIndicator == true) && (prePopulated.isEmpty == false) {
+            activityIndicator = false
+            activityIndicatorView.stopAnimating()
+            activityIndicatorView.hidesWhenStopped = true
         }
     }
     
@@ -243,69 +374,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     
-    /* POPULATE
- - The brain-child of the entire operation. This creates MKLocalSearch Queries for one item at a time.
- it then checks if the map has the local businesses on the map and if not adds them. */
-    func populate(locationQuery: String) {
-        // Set region to search for
-        var region = MKCoordinateRegion()
-        region.center = CLLocationCoordinate2D(latitude: self.mapView.centerCoordinate.latitude, longitude: self.mapView.centerCoordinate.longitude)
-        
-        //Requesting search for businesses in region
-        let request = MKLocalSearchRequest()
-        //Requesting by business type
-        request.naturalLanguageQuery = locationQuery
-        request.region = region
-        
-        //Search for region
-        let search = MKLocalSearch(request: request)
-        search.start { (response, error) in
-            
-            // Only allow responses with business information
-            guard response != nil else {
-                return
-            }
-            
-            // For each allowed item create a custom LocationObjects object using the data
-            mainLoop: for item in (response?.mapItems)! {
-                
-                // Finding phone number if available
-                var phone:String
-                if item.phoneNumber != nil {
-                    phone = item.phoneNumber!
-                } else {
-                    phone = " "
-                }
-                
-                // Finding address if available
-                var address:String
-                if (item.placemark.subThoroughfare != nil) {
-                    address = item.placemark.subThoroughfare! + " " + item.placemark.thoroughfare! + " " + item.placemark.locality! + ", " + item.placemark.administrativeArea! + " " + item.placemark.postalCode!
-                } else {
-                    address = " "
-                }
-                
-                let annotation = LocationObjects(name: item.name!, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude, userCLLocation: CLLocation(latitude: self.mapView.userLocation.coordinate.latitude, longitude: self.mapView.userLocation.coordinate.longitude), phone: phone, address: address)
-
-                // if the annotation is already on the map skip it
-                if self.prePopulated.contains(annotation) {
-                    continue mainLoop
-                    
-                } else {
-                    // else not on map already and append it to the toPopulate to deal with later on
-                    self.toPopulate.append(annotation)
-                }
-            }
-        }
-        
-        // Delete old and annotations more than ten miles away to conserve space
-        deleteLocationsTenMilesAway()
-        
-        // Add annotations to map that are nearby and not already on the map
-        sortPrePopulated()
-        addAnnotations()
-    }
-    
     /* SORTPREPOPULATED
  - Sorts prePopulated list in order of ascending distance */
     func sortPrePopulated() {
@@ -317,6 +385,12 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
  - Opens callout view of annotation passed into it */
     func openAnnotation(id: MKAnnotation) {
         _ = [mapView .selectAnnotation(id, animated: true)]
+    }
+    
+    /* TIMECOUNTER
+ - adds one to current time when called */
+    func timeCounter() {
+        currentTime += 1
     }
     
     

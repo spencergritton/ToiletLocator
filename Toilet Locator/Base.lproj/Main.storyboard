@@ -64,10 +64,15 @@
                                     <action selector="LocationLockButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F9C-M9-6fd"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="IdZ-aw-hv3">
+                                <rect key="frame" x="178" y="222" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="LocationLockButtonOutlet" destination="bXb-fI-fSy" id="onE-N1-GBP"/>
+                        <outlet property="activityIndicatorView" destination="IdZ-aw-hv3" id="ZRK-Zd-3Pz"/>
                         <outlet property="mapView" destination="Q1C-7z-Dz2" id="Wda-AD-R1o"/>
                         <outlet property="tableView" destination="dN2-Dh-9V1" id="adS-t2-wXc"/>
                     </connections>
