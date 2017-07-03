@@ -14,7 +14,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     
     // Initial calls for useful variables
     // Map Annotation Marker Image
-    let annotationPin = #imageLiteral(resourceName: "Toiletmap")
     var manager = CLLocationManager()
     // Businesses for MKLocalSearch Query
     var showTheseBusinesses = ["Gas Stations", "Coffee", "Bathroom", "Fast Food"]
@@ -67,9 +66,9 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         // the location doesn't move so there will be no pins on the map
         // This only adds "Gas Station" Annotations
         perform(#selector(ViewController.populate(locationQuery:)), with: "Gas Stations", afterDelay: 5)
-        
         activityIndicator = true
         activityIndicatorView.startAnimating()
+        tableView.reloadData()
     }
     
     /* LOCATION LOCK BUTTON
@@ -130,15 +129,125 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             if let view = mapView.dequeueReusableAnnotationView(withIdentifier: annotation.identifier){
                 return view
             }else{
+                
                 let view = MKAnnotationView(annotation: annotation, reuseIdentifier: annotation.identifier)
-                view.image = annotationPin
+                
                 view.isEnabled = true
                 view.canShowCallout = true
-                view.leftCalloutAccessoryView = UIImageView(image: annotationPin)
+                
+                // Setting map pin to appropriate icon
+                if annotation.identifier == "Gas Stations" {
+                    view.image = #imageLiteral(resourceName: "GasMapIcon")
+                } else if annotation.identifier == "Coffee" {
+                    view.image = #imageLiteral(resourceName: "CoffeeMapIcon")
+                } else if annotation.identifier == "Fast Food" {
+                    view.image = #imageLiteral(resourceName: "FoodMapIcon")
+                } else {
+                    view.image = #imageLiteral(resourceName: "ToiletMapIcon")
+                }
+                
+                // Right Accessory View
+                
+                let placemark = MKPlacemark(coordinate: CLLocationCoordinate2DMake(annotation.coordinate.latitude, annotation.coordinate.longitude), addressDictionary: nil)
+                
+                let button = CalloutButton(name: annotation.title!, placemark: placemark)
+                //button.frame = (frame: CGRect(x: 0, y: 0, width: 70, height: 30))
+                button.frame = CGRect(x: 0, y: 0, width: 70, height: 30)
+                button.backgroundColor = UIColor.clear
+                button.setTitle("Open in Maps", for: .normal)
+                button.titleLabel?.font = UIFont(name: "Verdana", size: 10)
+                button.setTitleColor(UIColor.blue, for: .normal)
+
+                
+                button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+                view.rightCalloutAccessoryView = button
+                
+                // Detail Accessory View
+                var image = #imageLiteral(resourceName: "ToiletMapIcon-1")
+                
+                if annotation.identifier == "Gas Stations" {
+                    image = #imageLiteral(resourceName: "GasMapIcon-1")
+                } else if annotation.identifier == "Coffee" {
+                    image = #imageLiteral(resourceName: "CoffeeMapIcon-1")
+                } else if annotation.identifier == "Fast Food" {
+                    image = #imageLiteral(resourceName: "FoodMapIcon-1")
+                }
+
+                view.detailCalloutAccessoryView = UIImageView(image: image)
+                
+                // Empty left label until info can be added
+                let label = UILabel(frame: CGRect(x: 0,y: 0,width: 50,height: 30))
+                label.text = ""
+                label.adjustsFontSizeToFitWidth = true
+                view.leftCalloutAccessoryView = label
+                
                 return view
             }
         }
         return nil
+    }
+    
+    /* DIDSELECT
+ - sets up left view detailing how long a route would take to drive
+ - Requests an ETA then returns it in label */
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        let userLocation = CLLocation(latitude: mapView.userLocation.coordinate.latitude, longitude: mapView.userLocation.coordinate.longitude)
+        let destinationLocation = CLLocationCoordinate2DMake((view.annotation?.coordinate.latitude)!, (view.annotation?.coordinate.longitude)!)
+        
+        let leftAccessory = UILabel(frame: CGRect(x: 0,y: 0,width: 80,height: 30))
+        leftAccessory.font = UIFont(name: "Verdana", size: 10)
+        
+        requestETA(userCLLocation: userLocation, coordinate: destinationLocation) { (travelTime, error) in
+            guard var travelTime = travelTime, error == nil else { return }
+            
+            let travelTimeDouble = Double(travelTime)
+
+            travelTime = String(format: "%.0f", travelTimeDouble!)
+            leftAccessory.text = travelTime + " Minute Drive"
+            view.leftCalloutAccessoryView = leftAccessory
+        }
+        
+    }
+    
+    /* REQUESTETA
+ - The absolute worst function to write, probably took a week of Googling efforts.
+ - Calls Apple's maps API to requst the length of time one a round from point A -> B would take */
+    func requestETA(userCLLocation: CLLocation, coordinate: CLLocationCoordinate2D, completion: @escaping (_ string: String?, _ error: Error?) -> () ) {
+        
+        let request = MKDirectionsRequest()
+        /* Source MKMapItem */
+        let sourceItem = MKMapItem(placemark: MKPlacemark(coordinate: userCLLocation.coordinate, addressDictionary: nil))
+        request.source = sourceItem
+        /* Destination MKMapItem */
+        let destinationItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate, addressDictionary: nil))
+        request.destination = destinationItem
+        request.requestsAlternateRoutes = false
+        // Looking for walking directions
+        request.transportType = MKDirectionsTransportType.automobile
+        
+        // You use the MKDirectionsRequest object constructed above to initialise an MKDirections object
+        let directions = MKDirections(request: request)
+        
+        var travelTime = "Not Available"
+        
+            directions.calculate { response, error in
+                if let route = response?.routes.first {
+                    travelTime = "\(route.expectedTravelTime/60)"
+                }
+                completion(travelTime, error)
+            }
+    }
+    
+    
+    // Button function that takes users to open the route to a location on maps, called from MAP VIEW
+    func buttonAction(sender: CalloutButton!) {
+        
+        let mapItem = MKMapItem(placemark: sender.internalPlacemark)
+        mapItem.name = sender.internalName
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeTransit]
+        mapItem.openInMaps(launchOptions: launchOptions)
+        
     }
     
     
@@ -199,6 +308,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         // For each item in the showTheseBusinesses array create a MKLocalSearch Query using that item as the query
         // This is done through the populate function.. could use a better name.
+       
         for item in showTheseBusinesses {
             populate(locationQuery: item)
         }
@@ -264,46 +374,66 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             // For each allowed item create a custom LocationObjects object using the data
             mainLoop: for item in (response?.mapItems)! {
                 
-                // Finding phone number if available
-                var phone:String
-                if item.phoneNumber != nil {
-                    phone = item.phoneNumber!
-                } else {
-                    phone = " "
-                }
+                //self.perform(#selector(ViewController.buildLocationObject(item:)), with: item, afterDelay: 0.2)
+                self.buildLocationObject(item: item, locationQuery: locationQuery)
                 
-                // Finding address if available
-                var address:String
-                if (item.placemark.subThoroughfare != nil) {
-                    address = item.placemark.subThoroughfare! + " " + item.placemark.thoroughfare! + " " + item.placemark.locality! + ", " + item.placemark.administrativeArea! + " " + item.placemark.postalCode!
-                } else {
-                    address = " "
-                }
                 
-                let annotation = LocationObjects(name: item.name!, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude, userCLLocation: CLLocation(latitude: self.mapView.userLocation.coordinate.latitude, longitude: self.mapView.userLocation.coordinate.longitude), phone: phone, address: address)
-                
-                // if the annotation is already on the map skip it
-                if self.prePopulated.contains(annotation) {
-                    continue mainLoop
-                    
-                } else {
-                    // else not on map already and append it to the toPopulate to deal with later on
-                    self.toPopulate.append(annotation)
-                }
             }
         }
-        
-        // Delete old and annotations more than ten miles away to conserve space
-        deleteLocationsTenMilesAway()
         
         // Add annotations to map that are nearby and not already on the map
         sortPrePopulated()
         addAnnotations()
+        
+        // Delete old and annotations more than ten miles away to conserve space
+        deleteLocationsTenMilesAway()
+    }
+    
+    /* BUILDLOCATIONOBJECT
+ - Called directly above, builds necessary LocationObjects for placement in map and in array.*/
+    func buildLocationObject(item: MKMapItem, locationQuery: String) {
+        
+        // Finding phone number if available
+        var phone:String
+        if item.phoneNumber != nil {
+            phone = item.phoneNumber!
+        } else {
+            phone = ""
+        }
+        
+        // Finding name if available
+        var name:String
+        if item.name != nil {
+            name = item.name!
+        } else {
+            name = ""
+        }
+        
+        // Finding address if available
+        var address:String
+        if (item.placemark.subThoroughfare != nil) {
+            address = item.placemark.subThoroughfare! + " " + item.placemark.thoroughfare! + " " + item.placemark.locality! + ", " + item.placemark.administrativeArea! + " " + item.placemark.postalCode!
+        } else {
+            address = ""
+        }
+        
+        let annotation = LocationObjects(name: name, lat: item.placemark.coordinate.latitude, long: item.placemark.coordinate.longitude, userCLLocation: CLLocation(latitude: self.mapView.userLocation.coordinate.latitude, longitude: self.mapView.userLocation.coordinate.longitude), phone: phone, address: address, locationType: locationQuery)
+        
+        // if the annotation is already on the map skip it
+        if self.prePopulated.contains(annotation) {
+            return
+            
+        } else {
+            // else not on map already and append it to the toPopulate to deal with later on
+            self.toPopulate.append(annotation)
+        }
+        
     }
     
     
+    
     /* DELETELOCATIONSTENMILESAWAY
- - New function that is very useful on reducing clutter. 
+ - New function that is very useful on reducing clutter.
  - Makes sure that if an annotation is not within ten miles of the users view that it is deleted to keep the app running freshly and without problems. This is done by calculating distance between the center of the map and all annotations on
      the map. */
     func deleteLocationsTenMilesAway() {
@@ -394,7 +524,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     
     
-    
     // START TABLE VIEW FUNCTIONS ------------------------------------------------------------------
     
     /* NUMBEROFROWSINSECTION
@@ -410,17 +539,35 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Tells the table to use the cell "Cell"
-        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Cell")
+        let cell = Bundle.main.loadNibNamed("TableViewCell1", owner: self, options: nil)?.first as! TableViewCell1
         
-        if prePopulated[indexPath.row].title != nil {
+        // Set Title
+        if prePopulated[indexPath.row].title != "" {
             
-            cell.textLabel?.text = "\(prePopulated[indexPath.row].title!) \(prePopulated[indexPath.row].distance)"
-            
+            cell.TitleLabel.text = prePopulated[indexPath.row].title
         } else {
-            // if there is no title make it blank
-            cell.textLabel?.text = ""
-            
+            cell.TitleLabel.text = "Not Availabile"
         }
+        
+        // Set Address
+        if prePopulated[indexPath.row].addressFinished != "" {
+            
+            cell.AddressLabel.text = prePopulated[indexPath.row].addressFinished
+        } else {
+            cell.AddressLabel.text = "Not Availabile"
+        }
+        
+        // Set Phone
+        if prePopulated[indexPath.row].phoneNumber != "" {
+            
+            cell.PhoneLabel.text = prePopulated[indexPath.row].phoneNumber
+        } else {
+            cell.PhoneLabel.text = "Not Availabile"
+        }
+        
+        // Set Distance
+            cell.DistanceLabel.text = String(prePopulated[indexPath.row].distance) + "mi."
+        
         return cell
     }
     
