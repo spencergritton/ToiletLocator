@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource{
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate{
     
     // Initial calls for useful variables
     // Map Annotation Marker Image
@@ -26,6 +26,12 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var currentTime = 0
     var sinceLastTimer = 0
     
+    // If user is searching with search bar?
+    var isSearching = false
+    
+    // Tap to dismiss keyboard
+    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
+    
     
     // OUTLETS --
     // Map Declaration
@@ -35,6 +41,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     // Location Lock Outlet
     @IBOutlet weak var LocationLockButtonOutlet: UIButton!
+    //Search Bar
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     
     /* VIEW DID APPEAR
  - called everytime the mapView appears, if you go to settings
@@ -46,6 +56,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
         mapView.delegate = self
+        searchBar.delegate = self
+        
+        view.addGestureRecognizer(tap)
+        
         
         // Swipe Gesture Recognizer
         let swipeRecogonizer = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.generalGestureRecognizer(gesture:)))
@@ -337,6 +351,9 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     var prePopulated = [LocationObjects]()
     var toPopulate = [LocationObjects]()
     
+    // For filtering with search bar
+    var filteredPopulated = [LocationObjects]()
+    
     
     /* POPULATE
      - The brain-child of the entire operation. This creates MKLocalSearch Queries for one item at a time.
@@ -523,6 +540,62 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         currentTime += 1
     }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchBar.text == nil || searchBar.text == "" {
+            
+            isSearching = false
+            
+            filteredPopulated = [LocationObjects]()
+            
+            view.endEditing(true)
+            
+            tableView.reloadData()
+            
+        } else {
+            
+            isSearching = true
+            
+            filteredPopulated = [LocationObjects]()
+            
+            for locationObject in prePopulated {
+                
+                let title = locationObject.title?.lowercased()
+                let search = searchBar.text?.lowercased()
+                
+                if (title?.contains(search!))! {
+                    
+                    if filteredPopulated.contains(locationObject) {
+                        continue
+                    } else {
+                        
+                    filteredPopulated.append(locationObject)
+                        
+                    }
+                    
+                }
+            }
+            
+            tableView.reloadData()
+            
+        }
+        
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        view.endEditing(true)
+        
+    }
+    
+    func dismissKeyboard() {
+        
+        if isSearching == true {
+            view.endEditing(true)
+        }
+        
+    }
+    
     
     // START TABLE VIEW FUNCTIONS ------------------------------------------------------------------
     
@@ -530,6 +603,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
  - returns the number of rows in prePopulated, making the table as long as the array */
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if isSearching {
+            return filteredPopulated.count
+        }
         
         return prePopulated.count
     }
@@ -540,6 +617,44 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         
         // Tells the table to use the cell "Cell"
         let cell = Bundle.main.loadNibNamed("TableViewCell1", owner: self, options: nil)?.first as! TableViewCell1
+        
+        // IF THE USER IS SEARCHING
+        
+        if isSearching {
+            
+            // Set Title
+            if filteredPopulated[indexPath.row].title != "" {
+                
+                cell.TitleLabel.text = filteredPopulated[indexPath.row].title
+            } else {
+                cell.TitleLabel.text = "Not Availabile"
+            }
+            
+            // Set Address
+            if filteredPopulated[indexPath.row].addressFinished != "" {
+                
+                cell.AddressLabel.text = filteredPopulated[indexPath.row].addressFinished
+            } else {
+                cell.AddressLabel.text = "Not Availabile"
+            }
+            
+            // Set Phone
+            if filteredPopulated[indexPath.row].phoneNumber != "" {
+                
+                cell.PhoneLabel.text = filteredPopulated[indexPath.row].phoneNumber
+            } else {
+                cell.PhoneLabel.text = "Not Availabile"
+            }
+            
+            // Set Distance
+            cell.DistanceLabel.text = String(filteredPopulated[indexPath.row].distance) + "mi."
+            
+            return cell
+
+            
+        }
+        
+        // IF USER NOT SEARCHING
         
         // Set Title
         if prePopulated[indexPath.row].title != "" {
@@ -579,12 +694,26 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationLock = false
         LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
         
-       let region = MKCoordinateRegionMakeWithDistance(prePopulated[indexPath.row].coordinate, 500, 500)
+        let region = MKCoordinateRegionMakeWithDistance(prePopulated[indexPath.row].coordinate, 500, 500)
         mapView.setRegion(region, animated: true)
         
         // Open the annotation callout view on the map
         openAnnotation(id: prePopulated[indexPath.row])
         
+    }
+    
+    // For some reason this function works but not the above.. more tests needed
+    
+    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        // Turn location lock off, zoom map to the coordinates of the place selected.
+        locationLock = false
+        LocationLockButtonOutlet.setImage(#imageLiteral(resourceName: "LocationObjectOff"), for: .normal)
+        
+        let region = MKCoordinateRegionMakeWithDistance(prePopulated[indexPath.row].coordinate, 500, 500)
+        mapView.setRegion(region, animated: true)
+        
+        // Open the annotation callout view on the map
+        openAnnotation(id: prePopulated[indexPath.row])
     }
 }
 
